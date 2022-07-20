@@ -1,0 +1,21 @@
+---
+- name: "Build container with ansible"
+  hosts: localhost
+  tasks:
+  - name: stop running ansible-container
+    command: sudo docker stop ansible-container
+    ignore_errors: yes
+  - name: remove ansible-container
+    command: sudo docker rm ansible-container
+    ignore_errors: yes
+  - name: remove ansible-img
+    command: sudo docker rmi ansible-img
+    ignore_errors: yes     
+  - name: build docker image for docker file
+    command: sudo docker build -t ansible-img .
+  - name: create tag to image
+    command: sudo docker tag ansible-img salhifayza/angular_dockerfile
+  - name: push image to dockerHub
+    command: sudo docker push salhifayza/angular_dockerfile  
+  - name: run container from ansible-img
+    command: sudo docker run -d --name ansible-container -p 8080:80 ansible-img
